@@ -6,19 +6,19 @@ dotenv.config()
 const geocode = (address, callback) => {
     const url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + encodeURIComponent(address) + '.json?access_token=' + process.env.GEOCODE_KEY + '&limit=1'
 
-    request({url:url, json:true}, (error, response) => {
+    request({url, json:true}, (error, { body } = {}) => {
         if (error) {
             callback('Unable to connect to location services!', undefined)
-        } else if (response.body.features.length === 0) {
-            callback('Unable to find location of ' + response.body.query[0], undefined)
+        } else if (body.features.length === 0) {
+            callback('Unable to find location of ' + body.query[0], undefined)
         } else {
-            features = response.body.features[0]
+            features = body.features[0]
             const lat = features.center[1]
             const long = features.center[0]
             callback(undefined,
                 {
-                    lat: lat, 
-                    long: long, 
+                    lat, 
+                    long, 
                     location: features.place_name
                 })
         }
